@@ -128,3 +128,20 @@ describe('viteFinal Compodoc generation', () => {
     expect(ensureCompodocDocumentation).not.toHaveBeenCalled();
   });
 });
+
+describe('viteFinal CSS minification', () => {
+  it("minifies CSS with esbuild so Angular's ::ng-deep does not warn under lightningcss", async () => {
+    const options = {
+      configDir: resolve(WORKSPACE_ROOT, '.storybook'),
+      angularBuilderContext: { workspaceRoot: WORKSPACE_ROOT },
+      presets: {
+        apply: async (key: string, fallback?: unknown) =>
+          key === 'framework' ? { options: {} } : fallback,
+      },
+    } as unknown as StandaloneOptions;
+
+    const config = await viteFinal({ root: WORKSPACE_ROOT }, options);
+
+    expect(config.build?.cssMinify).toBe('esbuild');
+  });
+});

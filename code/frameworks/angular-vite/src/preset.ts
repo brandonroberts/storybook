@@ -156,6 +156,14 @@ export const viteFinal = async (config: UserConfig, options?: StandaloneOptions)
       ],
     },
     build: {
+      // Angular's view-encapsulation selectors (`::ng-deep`, `:host-context()`)
+      // are not standard CSS. Vite 8 minifies CSS with lightningcss by default,
+      // which warns once per occurrence — hundreds of lines of noise on a real
+      // component library. The rules themselves survive minification unchanged,
+      // so this is cosmetic, but esbuild minifies the same stylesheets without
+      // complaining. Users who want lightningcss back can set `build.cssMinify`
+      // from `viteFinal` in .storybook/main.ts, which runs after this preset.
+      cssMinify: 'esbuild',
       rolldownOptions: {
         output: {
           // Preserve original class/function names through the production
